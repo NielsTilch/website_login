@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
-        <form action="/" method="post">
+        <h2>Sign Up</h2>
+        <form action="/signup" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
+            <button type="submit">Sign Up</button>
         </form>
         <br>
-        <button onclick="window.location.href='/signup'">Sign Up</button>
-        <button onclick="window.location.href='/accounts'">View list of accounts</button>
+        <button onclick="window.location.href='/'">Return to Login</button>
     </div>
 </body>
 </html>

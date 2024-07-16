@@ -16,11 +16,23 @@ def init_sqlite_db():
     )
     ''')
     conn.commit()
-    cursor.execute("INSERT INTO accounts (username, password) VALUES (?, ?)", ('testuser', hashlib.md5('password123'.encode()).hexdigest()))
-    conn.commit()
+
     conn.close()
 
+def print_accounts_table():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM accounts")
+    accounts = cursor.fetchall()
+    conn.close()
+    
+    print("Accounts Table:")
+    for account in accounts:
+        print(f"ID: {account[0]}, Username: {account[1]}, Password: {account[2]}")
+    print("End of Accounts Table\n")
+
 init_sqlite_db()
+print_accounts_table()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -44,10 +56,43 @@ def login():
     
     return render_template('login.html')
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        hashed_password = hashlib.md5(password.encode()).hexdigest()
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO accounts (username, password) VALUES (?, ?)", (username, hashed_password))
+        conn.commit()
+        conn.close()
+        print_accounts_table()  # Print the table after a new signup
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
 @app.route('/home')
 def home():
     if 'loggedin' in session:
-        return f'Hello, {session["username"]}! You are logged in.'
+        return f'Hello, {session["username"]}! You are logged in. <br><a href="/accounts">View all accounts</a>'
+    return redirect(url_for('login'))
+
+@app.route('/accounts')
+def accounts():
+    #if 'loggedin' in session:
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM accounts")
+        accounts = cursor.fetchall()
+        conn.close()
+        return render_template('accounts.html', accounts=accounts)
+    #return redirect(url_for('login'))
+
+@app.route('/print_accounts')
+def print_accounts():
+    print_accounts_table()
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
