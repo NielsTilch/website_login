@@ -8,6 +8,12 @@
 </head>
 <body>
     <div class="login-container">
+        <!-- Logo and Website Name -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='default_logo.png') }}" alt="Website Logo" class="logo">
+            <h1 class="website-name">My company</h1>
+        </div>
+        
         <h2>Login</h2>
         <form action="/" method="post">
             <label for="username">Username:</label>
@@ -17,8 +23,10 @@
             <button type="submit">Login</button>
         </form>
         <br>
-        <button onclick="window.location.href='/signup'">Sign Up</button>
-        <button onclick="window.location.href='/accounts'">View list of accounts</button>
+        <div class="button-container">
+            <button onclick="window.location.href='/signup'">Sign Up</button>
+            <button onclick="window.location.href='/accounts'">View Accounts</button>
+        </div>
     </div>
 </body>
 </html>

@@ -16,23 +16,9 @@ def init_sqlite_db():
     )
     ''')
     conn.commit()
-
     conn.close()
-
-def print_accounts_table():
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM accounts")
-    accounts = cursor.fetchall()
-    conn.close()
-    
-    print("Accounts Table:")
-    for account in accounts:
-        print(f"ID: {account[0]}, Username: {account[1]}, Password: {account[2]}")
-    print("End of Accounts Table\n")
 
 init_sqlite_db()
-print_accounts_table()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -68,7 +54,6 @@ def signup():
         cursor.execute("INSERT INTO accounts (username, password) VALUES (?, ?)", (username, hashed_password))
         conn.commit()
         conn.close()
-        print_accounts_table()  # Print the table after a new signup
         return redirect(url_for('login'))
 
     return render_template('signup.html')
@@ -81,19 +66,12 @@ def home():
 
 @app.route('/accounts')
 def accounts():
-    #if 'loggedin' in session:
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM accounts")
-        accounts = cursor.fetchall()
-        conn.close()
-        return render_template('accounts.html', accounts=accounts)
-    #return redirect(url_for('login'))
-
-@app.route('/print_accounts')
-def print_accounts():
-    print_accounts_table()
-    return redirect(url_for('login'))
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM accounts")
+    accounts = cursor.fetchall()
+    conn.close()
+    return render_template('accounts.html', accounts=accounts)
 
 if __name__ == '__main__':
     app.run(debug=True)
